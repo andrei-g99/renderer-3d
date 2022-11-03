@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <direct.h>
 #include <iterator>
 #include <fstream>
 #include <iostream>
@@ -31,8 +32,14 @@ int main() {
     utility::TimerRead(t0);
 
 
-    std::string path = "..\\out\\output2.png";
-    img.saveToFile(path);
+    std::string path = "..\\outputs\\output3.png";
+    if (!img.saveToFile(path)) {
+        std::cout << ">Creating directory ..\\outputs\n";
+          _mkdir("..\\outputs");
+          img.saveToFile(path);
+    }
+
+    std::cout << "\n>Image generated successfully!\n";
 
 }
 
