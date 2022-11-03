@@ -15,33 +15,50 @@
 #include "SFML/Window.hpp"
 #include "SFML/System.hpp"
 
+std::vector<triangle> projected;
+std::vector<triangle> screened;
+
+world config();
+
 int main() {
 
+    world scene = config();
 
-	const int width = 1920;
+    auto t0 = utility::TimerStart();
+
+    sf::Image img = render::Rasterizer(screened, scene, projected, true);
+
+    utility::TimerRead(t0);
+
+
+    std::string path = "..\\out\\output2.png";
+    img.saveToFile(path);
+
+}
+
+
+
+
+world config() {
+
+
+    const int width = 1920;
     const int height = 1080;
     double w = 1;
     double h = (double)height / (double)width;
-    auto cam = std::make_shared<camera>(camera({0,0,0}, {0,0,0}, {0,0,1}, w,h));
-    auto ls = std::make_shared<light>(light({-6,5,5},0.5));
+    auto cam = std::make_shared<camera>(camera({ 0,0,0 }, { 0,0,0 }, { 0,0,1 }, w, h));
+    auto ls = std::make_shared<light>(light({ -6,5,5 }, 0.5));
 
-    cube cub = cube({0,0,-5},1,sf::Color::White);
+    cube cub = cube({ 0,0,-5 }, 1, sf::Color::White);
     std::vector<std::shared_ptr<triangle>> list = cub.primitives();
     std::vector<std::shared_ptr<light>> light_list;
     light_list.push_back(ls);
 
-    auto scene = world(cam, list,light_list,w,h,width,height);
+    auto scene = world(cam, list, light_list, w, h, width, height);
 
-    cub.rotate_y(0.4);
-    cub.rotate_x(0);
+    projected = render::project_triangles(scene);
+    screened = render::projected_to_screen(projected, (double)width, (double)height, *cam);
 
-    std::vector<triangle> projected = render::project_triangles(scene);
-    std::vector<triangle> screened = render::projected_to_screen(projected, (double)width, (double)height, *cam);
-    sf::Image img = render::Rasterizer(screened, scene,projected,true);
-
-    //std::string path = "C:\\Users\\bitma\\Desktop\\renders\\output_3.png";
-    std::string path = "..\\out\\output.png";
-    img.saveToFile(path);
-
+    return scene;
 
 }

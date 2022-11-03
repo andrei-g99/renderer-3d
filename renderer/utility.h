@@ -141,7 +141,7 @@ namespace utility
 	void TimerRead(const std::chrono::time_point<std::chrono::steady_clock>& t0) {
 		auto const t1 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> duration = t1 - t0;
-		std::cout << "implementation duration: " << duration.count() << "s\n";
+		std::cout << "Timer expired after " << duration.count() << " seconds\n";
 	}
 
 }
